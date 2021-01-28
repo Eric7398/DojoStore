@@ -50,18 +50,36 @@ const io = new socketIOServer(server, { cors: true });
 io.on('connection', (socket) => {
     console.log('We have a new conneciton!!!');
 
+    // JOIN A ROOM.
     socket.on('join', ({ name, room }, callback) => {
         console.log(name, room)
+        // ADD USER TO LIST OF USERS. ERRORS ? ERRORS : ADD
         const { error, user } = addUser({ id: socket.id, name, room });
-
         if (error) return callback(error)
 
+        // ADMIN IS MADE AWARE OF THE ADDITIONAL USER
         socket.emit('message', { user: 'admin', text: `${user.name}, welcome to the room ${user.room}` })
+        // EVERYBODY ELSE IN ROOM IS MADE AWARE OF ADDITIONAL USER
         socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name}, has joined!` })
+
+        // NEW USER'S SOCKET IS ADDED TO THE SPECIFIED ROOM
         socket.join(user.room);
+
+        callback();
     });
+
+    // SEND MESSAGE FROM USER TO EVERYBODY ELSE IN
+    socket.on('sendMessage', (message, callback) => {
+        const user = getUser(socket.id);
+        io.to(user.room).emit('message', { user: user.name, text: message });
+        callback();
+    })
 
     socket.on('disconnect', () => {
         console.log('User had left!!!');
+        const user = removeUser(socket.id);
+        if (user) {
+            io.to(user.room).emit('message', { user: 'admin', text: `${user.name} has left` })
+        }
     });
 })

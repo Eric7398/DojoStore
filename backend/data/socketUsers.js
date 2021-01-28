@@ -22,11 +22,11 @@ const removeUser = (id) => {
 }
 
 const getUser = (id) => {
-  users.find(user => user.id === id)
+  return users.find(user => user.id === id)
 }
 
 const getUsersInRoom = (room) => {
-  users.filter(user => user.room === room)
+  return users.filter(user => user.room === room)
 }
 
 export { addUser, removeUser, getUser, getUsersInRoom }
