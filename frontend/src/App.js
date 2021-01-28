@@ -6,6 +6,8 @@ import Footer from './components/Footer'
 import HomeScreen from './screens/HomeScreen'
 import ProductScreen from './screens/ProductScreen'
 import CartScreen from './screens/CartScreen'
+import Chat from './sockets/Chat'
+import Join from './sockets/Join'
 
 
 
@@ -22,6 +24,10 @@ const App = () => {
           <Route path='/' component={HomeScreen} exact />
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/cart/:id?' component={CartScreen} />
+
+
+          <Route path="/join" component={Join} exact />
+          <Route path="/chat" component={Chat} />
 
         </Container>
       </main >
