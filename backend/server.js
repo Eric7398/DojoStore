@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js'
 import productRoutes from './routes/productRoutes.js'
 import router from './routes/socketRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 import { notFound, errorHandler } from './middleware/errorMiddleware.js'
 import { addUser, removeUser, getUser, getUsersInRoom } from './data/socketUsers.js'
 
@@ -14,17 +15,22 @@ connectDB()
 // Server & Socket Functions
 const app = express();
 
+// Using Cors for socketio
 app.use(cors())
 
 // Testing API at Root
+app.use(express.json())
+
 app.get('/', (req, res) => {
     res.send('API is Running...')
 })
 
 
 // Product % Socket Routes
-app.use('/api/products', productRoutes)
 app.use(router)
+app.use('/api/products', productRoutes)
+app.use('/api/users', userRoutes)
+
 
 
 // Errors
